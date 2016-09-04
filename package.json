@@ -1,6 +1,6 @@
 {
   "name": "rest-linked",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A prototype suporting REST based linked data in js-data, without requiring all facets of JSON-API.",
   "main": "dist/rest-linked.js",
   "module": "dist/rest-linked.js",
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rest-linked.git"
+    "url": "git+https://github.com/mdconaway/rest-linked.git"
   },
   "keywords": [
     "es6",
@@ -29,13 +29,13 @@
   "author": "Michael Conaway",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rest-linked/issues"
+    "url": "https://github.com/mdconaway/rest-linked/issues"
   },
   "files": [
     "src",
     "dist"
   ],
-  "homepage": "https://github.com/rest-linked#readme",
+  "homepage": "https://github.com/mdconaway/rest-linked#readme",
   "dependencies": {
     "bluebird": "^3.4.6",
     "js-data": "^3.0.0-rc.4",
