@@ -1,6 +1,6 @@
 {
   "name": "rest-linked",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A prototype suporting REST based linked data in js-data, without requiring all facets of JSON-API.",
   "main": "dist/rest-linked.js",
   "module": "dist/rest-linked.js",

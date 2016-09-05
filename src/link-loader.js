@@ -1,4 +1,4 @@
-//An example link config object:
+//An example link rowConfig object:
 //{
 //    type: 'hasMany',    //hasMany, hasOne, manyToMany
 //    ownKey: '',    //collection field name will match link name by default
@@ -10,32 +10,33 @@
 import Promise from 'bluebird';
 import Pluralize from 'pluralize';
 
-function linker(originRecord, loadedRecord, config){
-    if(config.type === 'manyToMany')
+function linker(originRecord, loadedRecord, rowConfig){
+    if(rowConfig.type === 'manyToMany')
     {
-        originRecord[config.ownKey] = originRecord[config.ownKey] ? originRecord[config.ownKey].push(loadedRecord[config.foreignPk]) : [loadedRecord[config.foreignPk]];
-        loadedRecord[config.foreignKey] = loadedRecord[config.foreignKey] ? loadedRecord[config.foreignKey].push(originRecord[config.ownPk]) : [originRecord[config.ownPk]];
+        originRecord[rowConfig.ownKey] = originRecord[rowConfig.ownKey] ? originRecord[rowConfig.ownKey].push(loadedRecord[rowConfig.foreignPk]) : [loadedRecord[rowConfig.foreignPk]];
+        loadedRecord[rowConfig.foreignKey] = loadedRecord[rowConfig.foreignKey] ? loadedRecord[rowConfig.foreignKey].push(originRecord[rowConfig.ownPk]) : [originRecord[rowConfig.ownPk]];
     }
-    else if(config.type === 'hasOne')
+    else if(rowConfig.type === 'hasOne')
     {
-        originRecord[config.ownKey] = loadedRecord[config.foreignPk];
-        loadedRecord[config.foreignKey] = originRecord[config.ownPk];
+        originRecord[rowConfig.ownKey] = loadedRecord[rowConfig.foreignPk];
+        loadedRecord[rowConfig.foreignKey] = originRecord[rowConfig.ownPk];
     }
-    else if(config.type === 'hasMany')
+    else if(rowConfig.type === 'hasMany')
     {
-        originRecord[config.ownKey] = originRecord[config.ownKey] ? originRecord[config.ownKey].push(loadedRecord[config.foreignPk]) : [loadedRecord[config.foreignPk]];
-        loadedRecord[config.foreignKey] = originRecord[config.ownPk];
+        originRecord[rowConfig.ownKey] = originRecord[rowConfig.ownKey] ? originRecord[rowConfig.ownKey].push(loadedRecord[rowConfig.foreignPk]) : [loadedRecord[rowConfig.foreignPk]];
+        loadedRecord[rowConfig.foreignKey] = originRecord[rowConfig.ownPk];
     }
 }
 
 export default function(originName = '', opts = {}){
-    let { store = {}, trim = '', linkConfig = {}, pluralize = Pluralize } = opts;
+    let { mapper = {}, trim = '', config = {}, pluralize = Pluralize } = opts;
     let defaultType = 'hasMany';
     return function(linkArray, query = {}){
-        let origin = this;
-        let links = this.links ? this.links : {};
-        let promises = [];
-        let toLoad = [];
+        let origin = this;                          //a record instance
+        let links = this.links ? this.links : {};   //a record's links object
+        let store = mapper.datastore;               //the store instance to query from
+        let promises = [];                          //an array of pending queries
+        let toLoad = [];                            //a vetted list of links to load
         if(Array.isArray(linkArray))
         {
             linkArray.forEach(function(link){
@@ -50,9 +51,9 @@ export default function(originName = '', opts = {}){
             toLoad = Object.keys(links);
         }
         toLoad.forEach(function(link){
-            if(!linkConfig[link])
+            if(!config[link])
             {
-                linkConfig[link] = {
+                config[link] = {
                     type: defaultType,
                     ownKey: link,
                     ownPk: 'id',
@@ -61,11 +62,11 @@ export default function(originName = '', opts = {}){
                     targetCollection: pluralize(link,1)
                 };
             }
-            let config = linkConfig[link];
+            let rowConfig = config[link];
             promises.push(
-                store.findAll(config.targetCollection, query, { endpoint: links[link].replace(trim, '') }).then(function(records){
+                store.findAll(rowConfig.targetCollection, query, { endpoint: links[link].replace(trim, '') }).then(function(records){
                     records.forEach(function(record){
-                        linker(origin, record, config);
+                        linker(origin, record, rowConfig);
                     });
                 })
             );

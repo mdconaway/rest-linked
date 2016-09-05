@@ -20,14 +20,11 @@ testStore.defineMapper('post', {
       }
     }
   },
-  methods: {
-    loadLinks: new restLinked.loader('post', {
-        store: testStore,
-        trim: '/api',    //trims '/api' out of any returned link urls. Don't need a trim? Great! Don't include the argument!
-        linkConfig: {
-          //a config object hash that details how to resolve link-loaded records
-        }
-    })
+  links: {
+    trim: '/api',    //trims '/api' out of any returned link urls. Don't need a trim? Great! Don't include the argument!
+    config: {
+      //a config object hash that details how to resolve link-loaded records
+    }
   }
 });
 
