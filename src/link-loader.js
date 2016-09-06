@@ -25,7 +25,7 @@ function linker(originRecord, loadedRecord, rowConfig){
     }
     else if(rowConfig.type === 'hasMany')
     {
-        originRecord[rowConfig.ownKey] = originRecord[rowConfig.ownKey] ? originRecord[rowConfig.ownKey] : [loadedRecord[rowConfig.foreignPk]];
+        originRecord[rowConfig.ownKey] = originRecord[rowConfig.ownKey] ? originRecord[rowConfig.ownKey] : [];
         loadedRecord[rowConfig.foreignKey] = originRecord[rowConfig.ownPk];
         originRecord[rowConfig.ownKey].push(loadedRecord[rowConfig.foreignPk]);
     }
