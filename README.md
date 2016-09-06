@@ -117,6 +117,17 @@ testStore.defineMapper('post', {
 
 ```
 
+Loading links for a relationship bears a strong resemblance to loading relations in vanilla js-data:
+```js
+testStore.findAll('post').then(function(posts){
+    posts.forEach(function(post){
+        post.loadLinks(['comments']).then(function(){
+            //congratulations! your comments are now loaded and linked in the store!
+        });
+    });
+});
+```
+
 ### HttpAdapter
 
 Exported js-data-http class.

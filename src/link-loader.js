@@ -13,8 +13,10 @@ import Pluralize from 'pluralize';
 function linker(originRecord, loadedRecord, rowConfig){
     if(rowConfig.type === 'manyToMany')
     {
-        originRecord[rowConfig.ownKey] = originRecord[rowConfig.ownKey] ? originRecord[rowConfig.ownKey].push(loadedRecord[rowConfig.foreignPk]) : [loadedRecord[rowConfig.foreignPk]];
-        loadedRecord[rowConfig.foreignKey] = loadedRecord[rowConfig.foreignKey] ? loadedRecord[rowConfig.foreignKey].push(originRecord[rowConfig.ownPk]) : [originRecord[rowConfig.ownPk]];
+        originRecord[rowConfig.ownKey] = originRecord[rowConfig.ownKey] ? originRecord[rowConfig.ownKey] : [];
+        loadedRecord[rowConfig.foreignKey] = loadedRecord[rowConfig.foreignKey] ? loadedRecord[rowConfig.foreignKey] : [];
+        originRecord[rowConfig.ownKey].push(loadedRecord[rowConfig.foreignPk]);
+        loadedRecord[rowConfig.foreignKey].push(originRecord[rowConfig.ownPk]);
     }
     else if(rowConfig.type === 'hasOne')
     {
@@ -23,8 +25,9 @@ function linker(originRecord, loadedRecord, rowConfig){
     }
     else if(rowConfig.type === 'hasMany')
     {
-        originRecord[rowConfig.ownKey] = originRecord[rowConfig.ownKey] ? originRecord[rowConfig.ownKey].push(loadedRecord[rowConfig.foreignPk]) : [loadedRecord[rowConfig.foreignPk]];
+        originRecord[rowConfig.ownKey] = originRecord[rowConfig.ownKey] ? originRecord[rowConfig.ownKey] : [loadedRecord[rowConfig.foreignPk]];
         loadedRecord[rowConfig.foreignKey] = originRecord[rowConfig.ownPk];
+        originRecord[rowConfig.ownKey].push(loadedRecord[rowConfig.foreignPk]);
     }
 }
 
